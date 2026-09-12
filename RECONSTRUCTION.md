@@ -46,8 +46,8 @@ of the live repository:
 | `drift.py` | 303 | 303 | exact |
 | `realignment.py` | 370 | 370 | exact |
 | `report.py` | 302 | 302 | exact |
-| `harness.py` | 263 | 257 | **−6** |
-| `generator.py` | 211 | 225 | **+14** |
+| `harness.py` | 263 | 257 | **−6** — traced, see below |
+| `generator.py` | 211 | 209 | **−2** — traced, see below |
 
 `gsa_adapter.py` reaching exactly 296 only after the two recovered edits were
 applied is the strongest single check here: the edits were recovered
