@@ -76,11 +76,38 @@ full suite passes — 43 tests (4 from `test_sanity.py`, 39 from
 ### 1. `harness.py` and `generator.py` differ by a few lines
 
 These two were recovered from the 2026-08-06 authoring session, not from the
-SAGE-K repository itself. Between being authored and being measured by the seam
-inventory, each picked up small changes that exist in no surviving archive
-record. The recovered versions are functionally complete and fully exercised by
-the test suite, but they are not line-for-line the SAGE-K copies. Unrecoverable
-without the original repository.
+SAGE-K repository itself, and so did not match the seam inventory's line counts.
+Both gaps have since been traced using the inventory's per-seam line citations
+as a cross-reference. Neither is a missing feature.
+
+**`generator.py` — resolved, now 209 lines against a documented 211.**
+The recovered file was 225 lines. The surplus was authoring scaffolding that the
+SAGE-K copy did not carry: a no-op `__init_subclass__`, and a module-level
+monkey-patch that reassigned `ScenarioGenerator.__init__` at import time purely
+to attach `self.rejected = []`. Both were removed and `rejected` is now
+initialized in `__init__` where it belongs, carrying its explanatory comment.
+This is an improvement on its own merits — reassigning a class's `__init__` at
+module scope breaks subclassing and defeats type checking, which is why the
+original line needed a `# type: ignore`. The public behaviour is unchanged and
+`gen.rejected` is still exercised by the test suite.
+
+The file is now uniformly two lines short of the original rather than fourteen
+long, and it aligns structurally: seam **S5** places the `Scenario(...)`
+constructor call across 8 lines with the model-commentary comment directly
+below it, which is exactly what this copy has. The residual two lines sit above
+the constructor, in the module docstring, and are cosmetic.
+
+**`harness.py` — characterized, still 257 lines against a documented 263.**
+The offset is staggered rather than a single missing block: zero at the result
+constants (`54-57`) and the `Resolver` protocol (`64-72`), two by the `decided`
+and `alignment` properties, six by the hash-verification and resolver-injection
+blocks. Every seam the inventory documents is present at the corresponding
+location with matching content and matching block length — seam **S9**'s
+`_score` is 19 lines in both. The six lines are distributed comment or
+whitespace within the `TestRun` property block and `TestHarness.run`.
+
+Neither residual gap is recoverable without the original repository, and
+neither affects behaviour.
 
 ### 2. `requirements.txt` — two conflicting archive records
 
@@ -159,6 +186,14 @@ modules". The recovered facade is 90 lines, matching exactly, but its `__all__`
 lists 40 entries. Unresolved; most likely a counting difference in the original
 analysis rather than a different file, since every other measurement of this
 file agrees.
+
+## Continuous integration
+
+`.github/workflows/ci.yml` runs the suite on Python 3.10 through 3.13, then
+asserts the stress-test fingerprint (`GREEN: 20`, `YELLOW: 0`, `RED: 0`)
+literally, so a change to the kernel's dynamics fails the build rather than
+passing silently. It also runs both remaining examples and the five-year
+interpretation demo end to end.
 
 ## What is not here
 

@@ -116,6 +116,10 @@ class ScenarioGenerator:
     def __init__(self, client: ModelClient, generator_label: str = "ai-scenario-generator"):
         self._client = client
         self._label = generator_label
+        # Rejections from the most recent generate() call, as (question, reason).
+        # Surfaced rather than swallowed: a batch where half the scenarios were
+        # dropped is telling you the zone list or the prompt needs work.
+        self.rejected: List[tuple] = []
 
     def generate(
         self,
@@ -174,14 +178,6 @@ class ScenarioGenerator:
 
         return created
 
-    # Rejections from the most recent generate() call, as (question, reason).
-    # Surfaced rather than swallowed: a batch where half the scenarios were
-    # dropped is telling you the zone list or the prompt needs work.
-    rejected: List[tuple]
-
-    def __init_subclass__(cls, **kwargs):  # pragma: no cover
-        super().__init_subclass__(**kwargs)
-
     @staticmethod
     def _parse(raw: str) -> List[Dict[str, Any]]:
         text = raw.strip()
@@ -197,18 +193,6 @@ class ScenarioGenerator:
         if not isinstance(scenarios, list):
             raise ValueError("model response has no 'scenarios' list")
         return scenarios
-
-
-# Attach the mutable rejection log per-instance rather than per-class.
-_original_init = ScenarioGenerator.__init__
-
-
-def _init_with_log(self, client: ModelClient, generator_label: str = "ai-scenario-generator"):
-    _original_init(self, client, generator_label)
-    self.rejected = []
-
-
-ScenarioGenerator.__init__ = _init_with_log  # type: ignore[method-assign]
 
 
 class StubModelClient:
