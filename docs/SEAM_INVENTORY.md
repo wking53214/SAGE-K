@@ -567,6 +567,7 @@
 **SIDE B:** C8 module-level constants
 **WHAT CROSSES:** `FORTRESS_AUDIT_LOG` (path, default `"fortress_audit.log"`), `FORTRESS_AUDIT_KEY` (default `"development-key"`), `FORTRESS_ENV`, and `FORTRESS_RUN_ID` (written, not read from outside). [OBSERVED]
 **CONTRACT:** A production deployment must not run on the default HMAC key. [OBSERVED — enforced directly]
+**CHANGED 2026-09-24:** the `"development-key"` default was removed. With `FORTRESS_AUDIT_KEY` unset the kernel now signs with a random per-process key, and `FORTRESS_ENV=production` without a key still raises at import. The enforcement text below describes the reconstruction as first inventoried.
 **ENFORCEMENT:** `if _AUDIT_KEY == "development-key" and os.getenv("FORTRESS_ENV") == "production": raise RuntimeError(...)`. Evaluated at **module import time**, once, at `kernel.py:70-71`. Verified empirically: `FORTRESS_ENV=production python -c "import sage_k.kernel"` raises. The gate is one-directional — it catches the default key in production but not a weak non-default key, and not production running under any other `FORTRESS_ENV` spelling. [OBSERVED]
 **LOCATION:** `sage_k/kernel.py:67-71`
 **ORIGIN:** DOCUMENTED in the exception message: "Production deployments require unique cryptographic keys."
