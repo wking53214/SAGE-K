@@ -100,7 +100,7 @@
 **TYPE:** OTHER — disjointness boundary: two module clusters share no import edge and no symbol. Secondary: none
 **SIDE A:** C2, C3, C4, C5, C6, C7
 **SIDE B:** C8, C9, C10
-**WHAT CROSSES:** Nothing. Zero imports in either direction; zero shared symbols; zero shared vocabulary. Grep for `kernel|gsa_adapter|Fortress|GraphExtractor` across C1–C7 returns no hits; grep for `Sentinel|scenario|regulation|zone` across C8–C10 returns no hits. [OBSERVED]
+**WHAT CROSSES:** Nothing. Zero imports in either direction; zero shared symbols; zero shared vocabulary. Grep for `kernel|gsa_adapter|Fortress|GraphExtractor` across C1-C7 returns no hits; grep for the external system's name and for `scenario|regulation|zone` across C8-C10 returns no hits. [OBSERVED]
 **CONTRACT:** Neither side assumes anything about the other. [OBSERVED]
 **ENFORCEMENT:** Absence of imports only. No packaging, namespace, or dependency mechanism holds this apart. [OBSERVED]
 **LOCATION:** Full import graph. Cluster A internal edges: `generator→scenarios`, `harness→scenarios`, `drift→harness`, `realignment→drift`, `report→drift`, `report→realignment`. Cluster B internal edges: `kernel→gsa_adapter`, `graph_extractor→gsa_adapter`.
@@ -718,7 +718,7 @@ None. Every one of the 30 components appears on at least one side of at least on
 
 ### Components examined but thin
 
-- **C20 (`TRANSCRIPT.md`)** was read selectively, not line by line: 1,352 lines, targeted by grep for structural terms (`interlock`, `universal_foundation`, `Lego`, `deep_freeze`, `Protocol`, `Sentinel`, `regulation`, `ambiguity zone`). The reads confirm the wrapper template's origin (S22, S24, S25) and confirm zero coverage of C2–C7. A full line-by-line read could surface additional documented origins for C8's guardrail thresholds (S27, S28, S29), which are currently NO EVIDENCE.
+- **C20 (`TRANSCRIPT.md`)** was read selectively, not line by line: 1,352 lines, targeted by grep for structural terms (`interlock`, `universal_foundation`, `Lego`, `deep_freeze`, `Protocol`, the external system's name, `regulation`, `ambiguity zone`). The reads confirm the wrapper template's origin (S22, S24, S25) and confirm zero coverage of C2-C7. A full line-by-line read could surface additional documented origins for C8's guardrail thresholds (S27, S28, S29), which are currently NO EVIDENCE.
 - **C22 (`fortress_audit.log`)** exists only as generated output; the version inspected was produced by this analysis's own test run, not committed.
 
 ### Parts of the system I could not access or read
