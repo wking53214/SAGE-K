@@ -109,7 +109,7 @@ python3 examples/run_kernel_stress_test.py      # kernel alone, 20 runs
 python3 examples/run_wrapped_kernel_demo.py     # kernel through the GSA adapter
 python3 examples/run_graph_extractor_demo.py    # AST extractor, direct + wrapped
 
-python3 -m pytest tests/ -q                     # 43 tests
+python3 -m pytest tests/ -q                     # 57 tests
 ```
 
 `examples/run_kernel_stress_test.py` is the reproducibility check. It is seeded
@@ -147,6 +147,7 @@ examples/
 tests/
   test_sanity.py           subsystem B: 4 tests
   test_interpretation.py   subsystem A: 39 governance-property tests
+  test_audit_key.py        subsystem B: 14 audit-key tests (key source, production gate, warnings)
 docs/
   SEAM_INVENTORY.md        39-seam boundary analysis of the original repo
   GEMINI_SOURCE_RECORD.md  recovered Gemini source record for subsystem B
