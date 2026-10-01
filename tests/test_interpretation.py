@@ -234,7 +234,7 @@ def test_refusal_is_neither_a_pass_nor_a_fail():
     lib.add(_approved(question="b"))
     lib.add(_approved(question="c"))
 
-    # Sentinel declines everything.
+    # The decision system declines everything.
     run = TestHarness(lib).run(lambda s: None, REG, "v1")
 
     assert run.indeterminate == 3
@@ -629,7 +629,7 @@ def test_full_loop_generate_approve_run_analyze_realign():
         s.approve(expected="A", approver="counsel@example", rationale="strict")
     proposed[3].reject(approver="counsel@example", reason="facts incoherent")
 
-    # 3. Sentinel answers; one has drifted.
+    # 3. The decision system answers; one has drifted.
     answers = iter(["A", "A", "B"])
     run = TestHarness(lib).run(lambda s: next(answers), REG, "v1")
     assert run.decided == 3

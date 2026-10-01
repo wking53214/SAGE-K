@@ -3,10 +3,10 @@ drift.py -- did our reading of the regulation slip?
 
 WHAT DRIFT IS HERE
 -------------------
-Drift is Sentinel answering a locked scenario differently than Legal
-locked it. It is measured per ZONE, not per regulation, because "our
-reading of the proxy-correlation zone slipped from 100% to 88%" is
-something a person can act on, and "something drifted" is not.
+Drift is the decision system answering a locked scenario differently
+than Legal locked it. It is measured per ZONE, not per regulation,
+because "our reading of the proxy-correlation zone slipped from 100% to
+88%" is something a person can act on, and "something drifted" is not.
 
 TOLERANCE IS A BUSINESS SETTING, NOT AN ENGINEERING ONE
 --------------------------------------------------------

@@ -1,10 +1,10 @@
 """
-interpretation -- how Sentinel keeps applying the reading it was given.
+interpretation -- how a decision system keeps applying the reading it was given.
 
 Regulations are not black and white. Where one is genuinely open, the
 business picks a reading. This package is what makes that reading real:
-it probes Sentinel with concrete situations every month and reports
-whether the answers still match what Legal locked in.
+it probes the decision system with concrete situations every month and
+reports whether the answers still match what Legal locked in.
 
 The loop:
 
@@ -12,8 +12,8 @@ The loop:
      ambiguity zones.                                    (generator.py)
   2. Legal approves or rejects each one, and in approving it LOCKS the
      correct answer. Nothing runs unapproved.            (scenarios.py)
-  3. Monthly, approved scenarios are posed to Sentinel and every
-     outcome is recorded, including refusals.              (harness.py)
+  3. Monthly, approved scenarios are posed to the decision system and
+     every outcome is recorded, including refusals.        (harness.py)
   4. Results are grouped by zone and compared to tolerance the business
      set, so drift is localized rather than vague.            (drift.py)
   5. Annually, humans decide whether the reading still holds, and the

@@ -3,11 +3,11 @@ scenarios.py -- the test-scenario library and its approval gate.
 
 WHAT A SCENARIO IS
 -------------------
-A scenario is a single concrete situation posed to Sentinel, plus the
-answer the business decided is correct under its chosen reading of a
-regulation. It is not a unit test of code. It is a probe of
-INTERPRETATION: "given these facts, does Sentinel still answer the way
-Legal said it should?"
+A scenario is a single concrete situation posed to the decision system,
+plus the answer the business decided is correct under its chosen reading
+of a regulation. It is not a unit test of code. It is a probe of
+INTERPRETATION: "given these facts, does the decision system still
+answer the way Legal said it should?"
 
 Scenarios exist because regulations are not black and white. Where a
 regulation is genuinely open, the business picks a reading. That
@@ -32,8 +32,8 @@ a content hash over its substantive fields; the harness recomputes
 that hash before running and refuses any scenario whose hash no longer
 matches what was approved. Editing an approved scenario is therefore
 not "an edit" -- it is a new scenario needing new approval. This is
-the same posture cassettes already use: silent modification is refused
-rather than detected later.
+the same posture the original private implementation takes: silent
+modification is refused rather than detected later.
 
 NO SILENT SKIPS
 ----------------

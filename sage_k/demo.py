@@ -96,7 +96,7 @@ def _build_library() -> ScenarioLibrary:
 
 
 def _resolver_for(year_pattern, scenario_order):
-    """Simulates Sentinel answering. Later years drift on purpose.
+    """Simulates the decision system answering. Later years drift on purpose.
 
     The year patterns below are written in the order the scenarios were
     authored, so they are bound to scenario IDs up front rather than handed
@@ -117,7 +117,7 @@ def _resolver_for(year_pattern, scenario_order):
     return resolve
 
 
-# Year by year: what Sentinel answers to each of the 6 scenarios.
+# Year by year: what the decision system answers to each of the 6 scenarios.
 # 2022 is clean. Slippage creeps into proxy_correlation and thin files.
 YEARS = {
     "2022-01-15": ["FLAG", "FLAG", "EXCLUDE", "PROPERTY", "APPLY", "APPLY"],

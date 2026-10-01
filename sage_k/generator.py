@@ -24,9 +24,9 @@ way proves nothing and is wasted approval effort.
 
 CLIENT IS INJECTED
 -------------------
-The model client is a constructor argument, same posture as
-sealed_channel and twin_client elsewhere in this codebase. Tests pass
-a stub; production passes a real client. Nothing here reaches the
+The model client is a constructor argument, same posture as the
+injected dependencies of the original private implementation. Tests
+pass a stub; production passes a real client. Nothing here reaches the
 network on its own.
 """
 

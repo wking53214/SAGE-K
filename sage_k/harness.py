@@ -1,13 +1,13 @@
 """
-harness.py -- the monthly run: pose approved scenarios to Sentinel,
-record what it answered.
+harness.py -- the monthly run: pose approved scenarios to the decision
+system, record what it answered.
 
 WHAT THIS DOES AND DOES NOT PROVE
 ----------------------------------
-It proves consistency, not correctness. A 100% pass rate means Sentinel
-is still applying the reading Legal locked in. It does not mean that
-reading is legally right. Only Legal can say that, and the annual
-realignment is where they say it again.
+It proves consistency, not correctness. A 100% pass rate means the
+decision system is still applying the reading Legal locked in. It does
+not mean that reading is legally right. Only Legal can say that, and the
+annual realignment is where they say it again.
 
 That distinction matters because the failure mode of a governance test
 suite is a green dashboard that means nothing. This one has a narrow,
@@ -15,10 +15,10 @@ honest claim: "we still do what we said we would do."
 
 FOUR OUTCOMES, NOT TWO
 -----------------------
-  MATCH        -- Sentinel answered as Legal locked in.
-  MISMATCH     -- Sentinel answered a different valid option. This is
+  MATCH        -- The system answered as Legal locked in.
+  MISMATCH     -- The system answered a different valid option. This is
                   drift, and it is the whole point of the exercise.
-  INDETERMINATE-- Sentinel declined to answer. Under this system's own
+  INDETERMINATE-- The system declined to answer. Under its own
                   rules that is correct behavior when the scenario
                   genuinely falls outside the declared reading, so it
                   is counted separately and never scored as a pass or
@@ -34,12 +34,12 @@ column.
 
 THE RESOLVER
 -------------
-The harness does not know how Sentinel answers a question. It is handed
-a resolver: anything callable that takes a scenario and returns an
-option string, or None to decline. In production that wraps the live
-cassette. In tests it is a dict lookup. Keeping it injected is what
-lets the same harness probe a proposed interpretation in shadow before
-anyone deploys it.
+The harness does not know how the decision system answers a question.
+It is handed a resolver: anything callable that takes a scenario and
+returns an option string, or None to decline. In production that wraps
+the live decision system. In tests it is a dict lookup. Keeping it
+injected is what lets the same harness probe a proposed interpretation
+in shadow before anyone deploys it.
 """
 
 from __future__ import annotations
@@ -62,7 +62,7 @@ def _utc_now() -> str:
 
 
 class Resolver(Protocol):
-    """How Sentinel answers one scenario.
+    """How the decision system answers one scenario.
 
     Returns the chosen option, or None to decline. Declining is a
     first-class answer here, not a failure to answer.
@@ -122,7 +122,7 @@ class TestRun:
 
     @property
     def decided(self) -> int:
-        """Scenarios Sentinel actually took a position on.
+        """Scenarios the decision system actually took a position on.
 
         Alignment is measured against this, not against total, because
         a refusal is not a wrong answer.
