@@ -39,7 +39,7 @@ of the live repository:
 | File | Seam inventory | This copy | |
 |---|---|---|---|
 | `gsa_adapter.py` | 296 | 296 | exact |
-| `kernel.py` | 443 | 443 | exact |
+| `kernel.py` | 443 | 470 | **+27** (audit key handling, see divergence 8) |
 | `graph_extractor.py` | 167 | 167 | exact |
 | `__init__.py` | 90 | 90 | exact |
 | `scenarios.py` | 266 | 266 | exact |
@@ -186,6 +186,19 @@ modules". The recovered facade is 90 lines, matching exactly, but its `__all__`
 lists 40 entries. Unresolved; most likely a counting difference in the original
 analysis rather than a different file, since every other measurement of this
 file agrees.
+
+### 8. Changed: the audit key no longer defaults to a string in the source
+
+The original kernel read `os.getenv("FORTRESS_AUDIT_KEY", "development-key")` and
+refused only that literal in production. A key written in the source lets anyone
+forge records that verify, so this copy has no default. With `FORTRESS_AUDIT_KEY`
+unset it signs with a random per-process key, so records cannot be verified after
+the process exits. `FORTRESS_ENV=production` refuses both a missing key and the
+literal `development-key`, and a `RuntimeWarning` is raised at import when the key
+is unset or is that literal. The original code is kept verbatim in
+`docs/GEMINI_SOURCE_RECORD.md`. The behaviour is pinned by
+`tests/test_audit_key.py`, and seams **S30** and **S31** in
+`docs/SEAM_INVENTORY.md` carry dated notes.
 
 ## Continuous integration
 

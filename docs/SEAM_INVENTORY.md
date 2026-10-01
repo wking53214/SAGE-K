@@ -556,6 +556,7 @@
 **ORIGIN:** NO EVIDENCE for the design; the file is gitignored, which is DOCUMENTED at `.gitignore:7`.
 **DEPENDS ON:** S31 (key source)
 **FAILURE MODE:** Under the default key the signature is forgeable by anyone who knows the default. A disk-full or permissions failure produces no audit record and no error. Running the test suite writes ~36 KB to this file as a side effect of `Fortress.run_cycle`. [OBSERVED — file created during test run]
+**CHANGED 2026-10-01:** there is no longer a default key (see S31). The forgeability described above now applies only when the published literal is set explicitly; with no key set, records are signed with a per-process random key and cannot be verified after the process exits.
 **CONFIDENCE:** high for the mechanics; the CONTRACT field is inferred because no verifier exists.
 
 ---
@@ -565,14 +566,15 @@
 **TYPE:** OTHER — a deployment-configuration boundary between process environment and module state. Secondary: TRUST, IDENTITY
 **SIDE A:** C23 environment variables
 **SIDE B:** C8 module-level constants
-**WHAT CROSSES:** `FORTRESS_AUDIT_LOG` (path, default `"fortress_audit.log"`), `FORTRESS_AUDIT_KEY` (default `"development-key"`), `FORTRESS_ENV`, and `FORTRESS_RUN_ID` (written, not read from outside). [OBSERVED]
-**CONTRACT:** A production deployment must not run on the default HMAC key. [OBSERVED — enforced directly]
-**CHANGED 2026-09-24:** the `"development-key"` default was removed. With `FORTRESS_AUDIT_KEY` unset the kernel now signs with a random per-process key, and `FORTRESS_ENV=production` without a key still raises at import. The enforcement text below describes the reconstruction as first inventoried.
-**ENFORCEMENT:** `if _AUDIT_KEY == "development-key" and os.getenv("FORTRESS_ENV") == "production": raise RuntimeError(...)`. Evaluated at **module import time**, once, at `kernel.py:70-71`. Verified empirically: `FORTRESS_ENV=production python -c "import sage_k.kernel"` raises. The gate is one-directional — it catches the default key in production but not a weak non-default key, and not production running under any other `FORTRESS_ENV` spelling. [OBSERVED]
-**LOCATION:** `sage_k/kernel.py:67-71`
+**WHAT CROSSES:** `FORTRESS_AUDIT_LOG` (path, default `"fortress_audit.log"`), `FORTRESS_AUDIT_KEY` (no default: when unset, a random per-process key is used), `FORTRESS_ENV`, and `FORTRESS_RUN_ID` (written, not read from outside). [OBSERVED]
+**CONTRACT:** A production deployment must not run on a missing key or on the published development key. [OBSERVED, enforced directly]
+**CHANGED 2026-09-24:** the `"development-key"` default was removed. With `FORTRESS_AUDIT_KEY` unset the kernel signs with a random per-process key, and `FORTRESS_ENV=production` without a key raises at import.
+**CHANGED 2026-10-01:** production also refuses the literal `"development-key"` when it is set explicitly (the 2026-09-24 change had dropped that check). A `RuntimeWarning` is raised at import when the key is unset, and when it is the published literal outside production. Behavior is pinned by `tests/test_audit_key.py`. Line citations into `kernel.py` elsewhere in this document were recorded against the original reconstruction; since then code after the imports has moved down by 2 lines and code after the audit-key block by 27.
+**ENFORCEMENT:** `if os.getenv("FORTRESS_ENV") == "production" and (not _CONFIGURED_AUDIT_KEY or _CONFIGURED_AUDIT_KEY == _PUBLISHED_DEFAULT_KEY): raise RuntimeError(...)`. Evaluated at **module import time**, once, at `kernel.py:79-82`. Verified empirically: `FORTRESS_ENV=production python -c "import sage_k.kernel"` raises, and so does the same with `FORTRESS_AUDIT_KEY=development-key`. The gate is one-directional: it catches a missing key and the published key in production but not a weak non-default key, and not production running under any other `FORTRESS_ENV` spelling. [OBSERVED]
+**LOCATION:** `sage_k/kernel.py:69-98`
 **ORIGIN:** DOCUMENTED in the exception message: "Production deployments require unique cryptographic keys."
 **DEPENDS ON:** none
-**FAILURE MODE:** Audit records signed with a publicly known key; because the check is import-time, changing the environment after import has no effect, and because C1 does not import C8 (S1), `import sage_k` alone never triggers the gate.
+**FAILURE MODE:** Audit records signed with a publicly known key (only if the published literal is set explicitly outside production), or, with no key set, signed with a key that exists only inside the process, so records cannot be verified after it exits and logs appended by several runs mix keys. Because the check is import-time, changing the environment after import has no effect, and because C1 does not import C8 (S1), `import sage_k` alone never triggers the gate.
 **CONFIDENCE:** high — confirmed by execution.
 
 ---
