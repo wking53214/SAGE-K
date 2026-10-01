@@ -58,7 +58,7 @@
 |---|---|
 | C23 | Environment variables: `FORTRESS_AUDIT_LOG`, `FORTRESS_AUDIT_KEY`, `FORTRESS_ENV`, `FORTRESS_RUN_ID` |
 | C24 | `ModelClient` — external LLM interface (Protocol only; no production implementation in repo) |
-| C25 | `Resolver` — external "Sentinel" interface (Protocol only; no implementation in repo) |
+| C25 | `Resolver` - external decision-system interface (Protocol only; no implementation in repo) |
 | C26 | `numpy` — optional soft dependency, `try/except ImportError` |
 
 ### Schemas (serialized or contract-bearing)
@@ -185,7 +185,7 @@
 **CONTRACT:** Side A assumes only that the client exposes `complete(prompt: str) -> str`. It does not assume valid JSON. [OBSERVED]
 **ENFORCEMENT:** `ModelClient` is a `typing.Protocol` — structural, unenforced at runtime, no `runtime_checkable`, no isinstance check. The client is a constructor argument; nothing in C3 constructs a network client. `_parse` strips a leading markdown fence, then raises `ValueError` on `JSONDecodeError` or on a missing/non-list `scenarios` key. Batch size bounded 1..100 by `MAX_SCENARIOS_PER_BATCH`. [OBSERVED — `generator.py:44-48, 139-141, 183-197`]
 **LOCATION:** `sage_k/generator.py:44-48`, `113-123`, `183-197`
-**ORIGIN:** DOCUMENTED — `generator.py:25-30` states the injection posture matches "sealed_channel and twin_client elsewhere in this codebase" and that nothing here reaches the network on its own. Neither named component exists in this repo. [OBSERVED]
+**ORIGIN:** DOCUMENTED - `generator.py:25-30` states the injection posture matches that of sibling components "elsewhere in this codebase" and that nothing here reaches the network on its own. None of those components exists in this repo. [OBSERVED]
 **DEPENDS ON:** none
 **FAILURE MODE:** A malformed model response raises `ValueError` out of `generate()` and no scenarios are created. A well-formed but wrong response produces `PROPOSED` scenarios, which S3 then blocks from running.
 **CONFIDENCE:** high for the mechanics; the referenced sibling components are absent from this repo, so the stated posture cannot be corroborated here.
@@ -196,7 +196,7 @@
 **NAME:** Resolver injection (the boundary to the system under test)
 **TYPE:** DATA — a callable contract. Secondary: TRUST, CONTROL
 **SIDE A:** C4
-**SIDE B:** C25 (external "Sentinel")
+**SIDE B:** C25 (external decision system)
 **WHAT CROSSES:** A `Scenario` object out; an option string or `None` back; or an exception. [OBSERVED]
 **CONTRACT:** Side A assumes only `__call__(scenario) -> Optional[str]`. It explicitly does not assume the answer is one of `options`, does not assume the call succeeds, and treats `None` as a legitimate answer rather than a failure. [DOCUMENTED — `harness.py:35-42, 64-72`]
 **ENFORCEMENT:** `Resolver` is a `typing.Protocol`, structural and unenforced. The call is wrapped in `try/except Exception`, and any exception becomes a `RESULT_ERROR` row carrying the exception type and message. The whole `Scenario` object is passed, including `situation` in full. [OBSERVED — `harness.py:220-234`]
@@ -725,13 +725,13 @@ None. Every one of the 30 components appears on at least one side of at least on
 
 - **The deleted artifacts as standalone files.** `artifact_1.py`, `artifact_2.py`, `artifact_3.py` were removed at `baf5ec8`. Their content survives inside C20 and in git history, but I read them through C20's quoting rather than as files. C19 states all three fail to parse (`SyntaxError`), so their internal seams could not be verified by execution.
 - **C25 (`Resolver`) and C24 (`ModelClient`) production implementations.** Neither exists in this repo. Everything about S7 and S8 beyond the Protocol shape and the calling convention is unverifiable here.
-- **`sealed_channel`, `twin_client`, and "cassettes"**, referenced by `generator.py:28` and `scenarios.py:35` as existing "elsewhere in this codebase." Grep confirms none is defined in this repo. Whatever seams connect C2–C7 to those components are outside what I can read.
+- **Sibling components**, referenced by `generator.py:28` and `scenarios.py:35` as existing "elsewhere in this codebase." Grep confirms none is defined in this repo. Whatever seams connect C2-C7 to those components are outside what I can read.
 - **`universal_foundation.deep_freeze_structure_function`**, imported by the original artifacts per C20 and absent from this repo; replaced by `_local_deep_freeze` (S21).
 
 ### Seams I suspect exist but could not confirm
 
 - **A persistence seam for `TestRun` and `DriftReport`.** Both expose `to_dict()` and both are consumed by `RealignmentTrail` and `calibration_suggestion` as historical sequences, which implies storage across months and years. No save/load path for either exists in the repo. Whether that seam lives in an untracked caller or does not exist is undetermined.
-- **A seam between C2–C7 and the "Sentinel" system itself.** C25's Protocol is the only visible edge. Whether C2–C7 were extracted from a larger codebase containing that system, and what else crossed that boundary, is not determinable from this tree.
+- **A seam between C2-C7 and the external decision system itself.** C25's Protocol is the only visible edge. Whether C2-C7 were extracted from a larger codebase, and what else crossed that boundary, is not determinable from this tree.
 - **An audit-log reader/verifier for C22.** S30's HMAC implies one exists somewhere; nothing in this repo reads the file, and the canonicalization asymmetry means the verification procedure is not recoverable from the writer alone without care.
 - **A regulation/interpretation store.** `InterpretationContext` carries `regulation_text` and `chosen_interpretation` as plain strings supplied by a caller, and `interpretation_version` is threaded through C4, C5, and C6 as a bare string. Whatever produces and versions those strings sits outside this tree.
 

@@ -27,9 +27,8 @@ code; see the note in `README.md`.
 
 **Evidence:** Gemini Apps Activity record timestamped `2026-07-04T20:27:43.223Z`,
 present in the account's Takeout export at
-`Gemini_History/Takeout/My Activity/Gemini Apps/myactivity.json` (record index
-219) and in the identical copy at
-`Gemini_Extraction/source/raw/original_gemini_export.json`.
+`Takeout/My Activity/Gemini Apps/myactivity.json` (record index 219) and in an
+identical copy of that export.
 
 **Repository history:** the chat was exported using Gemini's full-transcript
 download rather than re-prompted, and filed as the first of a planned pass over
@@ -52,15 +51,15 @@ in `RECONSTRUCTION.md`.
 ## Subsystem A — interpretation
 
 **Origin:** built 2026-08-06 as a standalone package named `interpretation`,
-designed as the interpretation-drift layer for the Sentinel governance system.
-Its `Resolver` protocol is the seam where Sentinel would be plugged in; no
-Sentinel implementation is included here, and none ever was.
+designed as an interpretation-drift layer for a separate decision system.
+Its `Resolver` protocol is the seam where that system would be plugged in; no
+implementation of it is included here, and none ever was.
 
 It was later merged into `sage_k/` as a second module cluster, and its facade
 became the package's `__init__.py`.
 
 **Evidence:** the module sources were recovered from the authoring conversation
-in the Claude archive (`Claude_History`, conversation `39aecf97`, 2026-08-06).
+in the Claude archive (conversation `39aecf97`, 2026-08-06).
 Module line counts match the independent seam analysis of the original
 repository exactly for `scenarios.py` (266), `drift.py` (303),
 `realignment.py` (370), `report.py` (302) and `__init__.py` (90).

@@ -204,4 +204,4 @@ interpretation demo end to end.
   `docs/GEMINI_SOURCE_RECORD.md`.
 - Any `Resolver` or `ModelClient` implementation. Both are protocols with no
   production implementation, in the original and here. The `Resolver` seam is
-  where Sentinel was intended to attach.
+  where the external decision system was intended to attach.

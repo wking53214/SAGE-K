@@ -5,9 +5,8 @@ artifacts, recovered verbatim from the account's Gemini Takeout export.
 
 - **Notebook:** `SAGE-K (Streaming Adaptive Governance & Ensemble Kernel)`
 - **Record timestamp:** `2026-07-04T20:27:43.223Z`
-- **Recovered from:** `Gemini_History/Takeout/My Activity/Gemini Apps/myactivity.json`
-  (record index 219) and the identical copy in
-  `Gemini_Extraction/source/raw/original_gemini_export.json`
+- **Recovered from:** `Takeout/My Activity/Gemini Apps/myactivity.json`
+  (record index 219) and an identical copy of that export
 - **Content:** the single consolidated module Gemini emitted, self-labelled
   `[SHA256-PLACEHOLDER-V7.0.0-PROD-UNIFIED-INTERLOCK]`, containing the
   S.A.G.E.-K. kernel, the GSA universal adapter, and the temporal doorway gate.
